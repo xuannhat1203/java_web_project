@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang quản trị</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css}" />
+    <link th:rel="stylesheet" th:href="@{/webjars/font-awesome/5.15.4/css/all.css}" />
+    <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.bundle.min.js}"></script>
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            color: #333;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #0d6efd 0%, #084298 100%);
+            min-height: 100vh;
+            padding-top: 30px;
+            color: #fff;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h5 {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .nav-link {
+            color: #e0e0e0;
+            font-size: 15px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid transparent;
+            border-radius: 0 30px 30px 0;
+            transition: 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-left: 4px solid #fff;
+            color: #ffffff;
+        }
+
+        .sidebar .nav-link i {
+            font-size: 17px;
+        }
+
+        main {
+            padding: 40px 30px;
+            background-color: #f4f6f9;
+        }
+
+        .card-metric {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            padding: 25px 20px;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .card-metric:hover {
+            transform: translateY(-4px);
+        }
+
+        .card-metric h3 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .table-wrapper {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+        }
+
+        .table thead {
+            background-color: #e9ecef;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f3f5;
+            cursor: pointer;
+        }
+
+        .top-course-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .top-course-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-right: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .top-course-item .title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #212529;
+        }
+
+        .top-course-item .student {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                padding-top: 15px;
+            }
+
+            .sidebar h5 {
+                font-size: 18px;
+            }
+
+            .sidebar .nav-link {
+                padding: 10px 15px;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            .card-metric h3 {
+                font-size: 26px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <nav class="col-md-2 d-none d-md-block sidebar">
+            <div class="position-sticky">
+                <h5>Xin chào quản trị viên</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/admin/dashboard}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/courses}">
+                            <i class="fas fa-book"></i> Khóa học
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/users}">
+                            <i class="fas fa-users"></i> Người dùng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4 py-4">
+            <div th:replace="${content}"></div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

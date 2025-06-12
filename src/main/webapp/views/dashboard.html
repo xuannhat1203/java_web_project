@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css}" />
+    <link th:rel="stylesheet" th:href="@{/webjars/font-awesome/5.15.4/css/all.css}" />
+    <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.bundle.min.js}"></script>
+</head>
+
+<body>
+<div class="container mt-4">
+    <h2 class="mb-4">Trang quản trị - Dashboard</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-book"></i> Tổng số khóa học</h5>
+                    <p class="card-text fs-4" th:text="${totalCourses}">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-user-graduate"></i> Tổng số sinh viên</h5>
+                    <p class="card-text fs-4" th:text="${totalStudents}">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-file-alt"></i> Tổng lượt đăng ký</h5>
+                    <p class="card-text fs-4" th:text="${totalEnrollments}">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h5>Khóa học mới nhất</h5>
+            <ul class="list-group">
+                <li class="list-group-item" th:each="course : ${latestCourses}">
+                    <strong th:text="${course.name}">Tên khóa học</strong>
+                    <br>
+                    <small>Giảng viên: <span th:text="${course.instructor}">Tên GV</span> |
+                        Ngày tạo: <span th:text="${course.create_at}">01-01-2024</span></small>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h5>Sinh viên mới đăng ký</h5>
+            <ul class="list-group">
+                <li class="list-group-item" th:each="student : ${latestStudents}">
+                    <strong th:text="${student.name}">Tên sinh viên</strong>
+                    <br>
+                    <small>Email: <span th:text="${student.email}">email@example.com</span> |
+                        Ngày tạo: <span th:text="${student.create_at}">01-01-2024</span></small>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

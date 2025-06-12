@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sinh viên</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css}" />
+    <link th:rel="stylesheet" th:href="@{/webjars/font-awesome/5.15.4/css/all.css}" />
+    <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body>
+<div class="container bg-white mt-4" th:fragment="listStudent">
+    <div class="mb-4 d-flex justify-content-between">
+        <h2>Danh sách sinh viên</h2>
+    </div>
+
+    <form id="searchForm" class="d-flex mb-4" th:action="@{/admin/users}" method="get">
+        <input class="form-control me-2" type="search" name="name" placeholder="Tìm sinh viên"
+               th:value="${name}" />
+
+        <label>
+            <select class="form-select me-2" name="sortDirection" style="width: 150px;">
+                <option th:value="asc" th:selected="${sortDirection == 'asc'}">ID tăng dần</option>
+                <option th:value="desc" th:selected="${sortDirection == 'desc'}">ID giảm dần</option>
+            </select>
+        </label>
+
+        <button class="btn btn-outline-success" type="submit">Tìm</button>
+    </form>
+
+
+    <table class="table table-bordered table-hover">
+        <thead class="text-bg-primary text-center">
+        <tr>
+            <th>STT</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Ngày sinh</th>
+            <th>Chức năng</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student, iterStat : ${users}">
+            <td th:text="${iterStat.count}">1</td>
+            <td th:text="${student.name}"></td>
+            <td th:text="${student.email}"></td>
+            <td th:text="${student.dob}"></td>
+            <td class="text-center">
+                <a href="#" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                <a th:href="@{/admin/students/delete/{id}(id=${student.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Bạn có chắc muốn xóa sinh viên này?')">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(users)}">
+            <td colspan="5" class="text-center">Không có sinh viên nào</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example" class="d-flex justify-content-end">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/users(page=${currentPage - 1}, size=${size}, name=${name}, sortDirection=${sortDirection})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/admin/users(page=${pageNum}, size=${size}, name=${name}, sortDirection=${sortDirection})}"
+                   th:text="${pageNum}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/users(page=${currentPage + 1}, size=${size}, name=${name}, sortDirection=${sortDirection})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

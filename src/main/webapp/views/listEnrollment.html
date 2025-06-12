@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách ghi danh</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css}" />
+    <link th:rel="stylesheet" th:href="@{/webjars/font-awesome/5.15.4/css/all.css}" />
+    <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body>
+<div class="container bg-white" th:fragment="listEnrollment">
+    <div class="mb-4 d-flex justify-content-between">
+        <h2>Danh sách ghi danh</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formEnrollmentModal">Ghi danh mới</button>
+    </div>
+
+    <form id="searchForm" class="d-flex mb-4" th:action="@{/admin/enrollments}" method="get">
+        <input class="form-control me-2" type="search" name="keyword" placeholder="Tìm sinh viên hoặc khóa học" th:value="${keyword}" />
+        <select class="form-select me-2" name="sortDirection" style="width: 150px;">
+            <option th:value="asc" th:selected="${sortDirection == 'asc'}">Tăng dần</option>
+            <option th:value="desc" th:selected="${sortDirection == 'desc'}">Giảm dần</option>
+        </select>
+        <input type="hidden" name="page" th:value="${currentPage}" />
+        <input type="hidden" name="size" th:value="${size}" />
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead class="text-bg-primary text-center">
+        <tr>
+            <th>STT</th>
+            <th>Tên sinh viên</th>
+            <th>Tên khóa học</th>
+            <th>Ngày ghi danh</th>
+            <th>Chức năng</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="enrollment, iterStat : ${enrollments}">
+            <td th:text="${iterStat.count}">1</td>
+            <td th:text="${enrollment.student.name}">Nguyễn Văn A</td>
+            <td th:text="${enrollment.course.name}">Lập trình Java</td>
+            <td th:text="${enrollment.enrollDate}">2025-06-01</td>
+            <td class="text-center">
+                <a href="#" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                <a th:href="@{/admin/enrollments/delete/{id}(id=${enrollment.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Bạn có chắc muốn xóa ghi danh này?')">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation" class="d-flex justify-content-end">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/enrollments(page=${currentPage - 1}, size=${size}, keyword=${keyword}, sortDirection=${sortDirection})}">&laquo;</a>
+            </li>
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/admin/enrollments(page=${pageNum}, size=${size}, keyword=${keyword}, sortDirection=${sortDirection})}"
+                   th:text="${pageNum}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/enrollments(page=${currentPage + 1}, size=${size}, keyword=${keyword}, sortDirection=${sortDirection})}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div th:replace="formEnrollment :: formEnrollmentModal"></div>
+
+</body>
+</html>
