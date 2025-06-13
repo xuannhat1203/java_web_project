@@ -82,7 +82,7 @@ public class LoginAndRegister {
             if (user.getRole() == Role.ADMIN) {
                 return "redirect:/admin/dashboard";
             } else {
-                return "redirect:/home";
+                return "redirect:/courses";
             }
         }
         return "login";

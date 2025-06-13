@@ -3,6 +3,7 @@ package ra.edu.controller;
 import ra.edu.entity.Course;
 import ra.edu.entity.Enrollment;
 import ra.edu.entity.User;
+import ra.edu.enumData.StatusEnrollment;
 import ra.edu.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -61,25 +62,32 @@ public class ListCourseUserPageController {
         return "mainPage";
     }
 
-    @PostMapping("/{id}/register")
+    @PostMapping("/{idCourse}/register")
     @ResponseBody
     public String registerCourse(@PathVariable int idCourse, HttpSession session) {
         try {
             User user = (User) session.getAttribute("user");
-            Enrollment enrollment = new Enrollment();
-            enrollment.setCourse(courseServiceImp.findById(idCourse));
-            enrollment.setUser(user);
-            enrollment.setRegistered_at(LocalDateTime.now());
+            System.out.println("user id: " + user.getId());
+            System.out.println("course id: " + idCourse);
+
             boolean isRegistered = enrollmentUserRegisterService.checkEnrollment(user.getId(), idCourse);
             if (isRegistered) {
                 return "registered";
             }
+
+            Enrollment enrollment = new Enrollment();
+            enrollment.setCourse(courseServiceImp.findById(idCourse));
+            enrollment.setUser(user);
+            enrollment.setRegistered_at(LocalDateTime.now());
+            enrollment.setStatus(StatusEnrollment.WAITING);
             boolean success = enrollmentUserRegisterService.registerCourse(enrollment);
             return success ? "success" : "error";
         } catch (Exception e) {
+            e.printStackTrace();
             return "error";
         }
     }
+
 
     @GetMapping("/{id}/details")
     @ResponseBody
