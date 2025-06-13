@@ -18,7 +18,7 @@ public class CourseRepositoryImp implements CourseRepository {
     public List<Course> findAll(String keyword, String sortDirection, int page, int size) {
         Session session = sessionFactory.openSession();
         StringBuilder hql = new StringBuilder("FROM Course c WHERE 1=1");
-
+        hql.append(" AND c.name NOT LIKE '%_delete'");
         if (keyword != null && !keyword.trim().isEmpty()) hql.append(" AND c.name LIKE :keyword");
 
         if ("desc".equalsIgnoreCase(sortDirection)) {
@@ -37,7 +37,7 @@ public class CourseRepositoryImp implements CourseRepository {
     public long countWithFilter(String keyword) {
         Session session = sessionFactory.openSession();
         StringBuilder hql = new StringBuilder("SELECT COUNT(c.id) FROM Course c WHERE 1=1");
-
+        hql.append(" AND c.name NOT LIKE '%_delete'");
         if (keyword != null && !keyword.trim().isEmpty()) hql.append(" AND c.name LIKE :keyword");
 
         Query<Long> query = session.createQuery(hql.toString(), Long.class);
@@ -97,8 +97,20 @@ public class CourseRepositoryImp implements CourseRepository {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         Course course = session.get(Course.class, id);
-        if(course == null) return;
-        session.delete(course);
+        if (course == null) {
+            session.getTransaction().commit();
+            return;
+        }
+        Query<Long> countQuery = session.createQuery(
+                "SELECT COUNT(e.id) FROM Enrollment e WHERE e.course.id = :courseId", Long.class);
+        countQuery.setParameter("courseId", id);
+        long enrollmentCount = countQuery.uniqueResult();
+        if (enrollmentCount > 0) {
+            course.setName(course.getName() + "_delete");
+            session.update(course);
+        } else {
+            session.delete(course);
+        }
         session.getTransaction().commit();
     }
 }

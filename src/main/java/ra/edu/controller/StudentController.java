@@ -2,8 +2,10 @@ package ra.edu.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ra.edu.dto.UserDTO;
 import ra.edu.entity.User;
 import ra.edu.enumData.Role;
@@ -11,6 +13,8 @@ import ra.edu.enumData.StatusAccount;
 import ra.edu.service.StudentServiceImp;
 import java.time.LocalDate;
 import java.util.List;
+
+import static java.lang.System.out;
 
 @Controller
 @RequestMapping("/admin/users")
@@ -42,6 +46,16 @@ public class StudentController {
         model.addAttribute("size", size);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("content", "listStudent");
+    }
+    @PostMapping("/toggle-status")
+    public String toggleUserStatus(@RequestParam("userId") int userId, RedirectAttributes redirectAttributes) {
+        boolean result = studentServiceImp.updateStatus(userId);
+        if (result) {
+            redirectAttributes.addFlashAttribute("message", "Cập nhật trạng thái thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy sinh viên hoặc cập nhật thất bại.");
+        }
+        return "redirect:/admin/users";
     }
 
     private User convertToUser(UserDTO dto, User existingUser) {

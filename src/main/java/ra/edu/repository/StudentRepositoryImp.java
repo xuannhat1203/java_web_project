@@ -44,21 +44,20 @@ public class StudentRepositoryImp implements StudentRepository {
             session.close();
             return false;
         }
+
         if (user.getStatus() == StatusAccount.ACTIVE) {
             user.setStatus(StatusAccount.INACTIVE);
         } else {
             user.setStatus(StatusAccount.ACTIVE);
         }
-        Query query = session.createQuery("update User set status = :status where id = :id");
-        query.setParameter("status", user.getStatus());
-        query.setParameter("id", id);
-        int rowsAffected = query.executeUpdate();
 
+        session.update(user);
         session.getTransaction().commit();
         session.close();
 
-        return rowsAffected > 0;
+        return true;
     }
+
     @Override
     public long countWithFilter(String keyword){
         Session session = sessionFactory.openSession();

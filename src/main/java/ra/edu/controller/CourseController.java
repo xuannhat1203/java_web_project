@@ -56,8 +56,11 @@ public class CourseController {
         if (!isCheck && courseService.existsByName(courseDTO.getName())) {
             bindingResult.rejectValue("name", "error.courseDTO", "Tên khóa học đã tồn tại");
         }
-
+        if (!isCheck && (courseDTO.getImageFile() == null || courseDTO.getImageFile().isEmpty())) {
+            bindingResult.rejectValue("imageFile", "error.courseDTO", "Ảnh không được để trống");
+        }
         if (bindingResult.hasErrors()) {
+            name = null;
             loadCourseListForPage(model, name, sortDirection, page, size);
             model.addAttribute("showFormModal", true);
             return "admin";

@@ -36,7 +36,7 @@
             <th>Họ tên</th>
             <th>Email</th>
             <th>Ngày sinh</th>
-            <th>Chức năng</th>
+            <th>Trạng thái</th>
         </tr>
         </thead>
         <tbody>
@@ -46,11 +46,14 @@
             <td th:text="${student.email}"></td>
             <td th:text="${student.dob}"></td>
             <td class="text-center">
-                <a href="#" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                <a th:href="@{/admin/students/delete/{id}(id=${student.id})}" class="btn btn-danger btn-sm"
-                   onclick="return confirm('Bạn có chắc muốn xóa sinh viên này?')">
-                    <i class="fas fa-trash-alt"></i>
-                </a>
+                <form th:action="@{/admin/users/toggle-status}" method="post">
+                    <input type="hidden" name="userId" th:value="${student.id}" />
+                    <button type="submit" class="btn btn-link p-0 border-0" style="background: none;">
+                        <i class="fas"
+                           th:classappend="${student.status.name() == 'ACTIVE'} ? 'fa-lock-open text-success' : 'fa-lock text-danger'"
+                           th:title="${student.status.name() == 'ACTIVE'} ? 'Kích hoạt' : 'Đang bị khóa'"></i>
+                    </button>
+                </form>
             </td>
         </tr>
         <tr th:if="${#lists.isEmpty(users)}">
