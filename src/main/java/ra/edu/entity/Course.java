@@ -33,6 +33,6 @@ public class Course {
 
     private LocalDate create_at;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Enrollment> enrollments;
 }

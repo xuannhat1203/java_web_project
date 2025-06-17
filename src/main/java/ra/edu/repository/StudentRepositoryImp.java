@@ -17,20 +17,30 @@ public class StudentRepositoryImp implements StudentRepository {
     @Override
     public List<User> listStudentPagination(String search, String sort, int page, int size) {
         Session session = sessionFactory.openSession();
-        StringBuilder hql = new StringBuilder("FROM User c WHERE 1=1");
+        try {
+            StringBuilder hql = new StringBuilder("FROM User c WHERE 1=1");
 
-        if (search != null && !search.trim().isEmpty()) hql.append(" AND c.name LIKE :keyword");
+            if (search != null && !search.trim().isEmpty()) {
+                hql.append(" AND LOWER(c.name) LIKE :keyword");
+            }
+            if ("desc".equalsIgnoreCase(sort)) {
+                hql.append(" ORDER BY c.name DESC");
+            } else {
+                hql.append(" ORDER BY c.name ASC");
+            }
+            Query<User> query = session.createQuery(hql.toString(), User.class);
+            if (search != null && !search.trim().isEmpty()) {
+                query.setParameter("keyword", "%" + search.toLowerCase() + "%");
+            }
+            query.setFirstResult((page - 1) * size);
+            query.setMaxResults(size);
 
-        if ("desc".equalsIgnoreCase(sort)) {
-            hql.append(" ORDER BY c.name DESC");
-        } else {
-            hql.append(" ORDER BY c.name ASC");
+            return query.list();
+        } finally {
+            session.close();
         }
-
-        Query<User> query = session.createQuery(hql.toString(), User.class);
-        if (search != null && !search.trim().isEmpty()) query.setParameter("keyword", "%" + search.toLowerCase() + "%");
-        return query.setFirstResult((page - 1) * size).setMaxResults(size).list();
     }
+
 
 
     @Override

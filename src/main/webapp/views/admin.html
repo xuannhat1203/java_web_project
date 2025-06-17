@@ -152,17 +152,17 @@
                 <h5>Xin chào quản trị viên</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" th:href="@{/admin/dashboard}">
+                        <a th:classappend="${#httpServletRequest.requestURI.startsWith('/admin/dashboard')} ? ' active' : ''" class="nav-link" th:href="@{/admin/dashboard}">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/courses}">
+                        <a    th:classappend="${#httpServletRequest.requestURI.startsWith('/admin/courses')} ? ' active' : ''" class="nav-link" th:href="@{/admin/courses}">
                             <i class="fas fa-book"></i> Khóa học
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/admin/users}">
+                        <a    th:classappend="${#httpServletRequest.requestURI.startsWith('/admin/users')} ? ' active' : ''" class="nav-link" th:href="@{/admin/users}">
                             <i class="fas fa-users"></i> Người dùng
                         </a>
                     </li>

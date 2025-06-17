@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
@@ -30,14 +31,18 @@ public class ListCourseUserPageController {
     private PersonService personService;
     @Autowired
     private EnrollmentUserRegisterService enrollmentUserRegisterService;
-
+    @Autowired
+    private EnrollmentService enrollmentService;
     @GetMapping
     public String listCourses(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String search,
-            Model model) {
-
+            Model model,HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
         List<Course> allCourses;
         if (search != null && !search.isEmpty()) {
             allCourses = courseService.searchCoursesByName(search);
@@ -59,6 +64,13 @@ public class ListCourseUserPageController {
         for (Course course : paginatedCourses) {
             out.println(course.getName() + "   123123123");
         }
+        List<Integer> enrolledCourseIds = enrollmentService
+                .findEnrollmentsByUserId(user.getId())
+                .stream()
+                .map(e -> e.getCourse().getId())
+                .collect(Collectors.toList());
+
+        model.addAttribute("enrolledCourseIds", enrolledCourseIds);
         return "mainPage";
     }
 

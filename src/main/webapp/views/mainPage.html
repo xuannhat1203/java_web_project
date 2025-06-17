@@ -29,7 +29,6 @@
 </head>
 <body>
 
-<!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 py-2 sticky-top">
     <a class="navbar-brand d-flex align-items-center" href="/">
         <img src="https://jbagy.me/wp-content/uploads/2025/03/Hinh-anh-avatar-nam-cute-2.jpg" alt="Logo"
@@ -52,7 +51,6 @@
     </div>
 </nav>
 
-<!-- ✅ Main Content -->
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-warning">List Course</h2>
@@ -62,7 +60,6 @@
         </form>
     </div>
 
-    <!-- ✅ Course Grid -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
         <div class="col" th:each="course : ${courses}">
             <div class="card course-card h-100 shadow-sm">
@@ -78,8 +75,8 @@
                     <button class="btn btn-success mt-2 btn-register"
                             th:id="'registerBtn-' + ${course.id}"
                             th:data-id="${course.id}"
-                            th:disabled="${#request.getAttribute('enrolledCourseIds') != null and #request.getAttribute('enrolledCourseIds').contains(course.id)}"
-                            th:text="${#request.getAttribute('enrolledCourseIds') != null and #request.getAttribute('enrolledCourseIds').contains(course.id)} ? 'Registered' : 'Register'"
+                            th:disabled="${enrolledCourseIds != null and #lists.contains(enrolledCourseIds, course.id)}"
+                            th:text="${(enrolledCourseIds != null and #lists.contains(enrolledCourseIds, course.id)) ? 'Registered' : 'Register'}"
                             onclick="confirmRegister(this)">
                         Register
                     </button>
@@ -88,7 +85,6 @@
         </div>
     </div>
 
-    <!-- ✅ Pagination -->
     <div class="mt-4 text-center">
         <nav>
             <ul class="pagination justify-content-center">
@@ -107,7 +103,6 @@
     </div>
 </div>
 
-<!-- ✅ Confirm Register Modal -->
 <div class="modal fade" id="confirmRegisterModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -124,7 +119,6 @@
     </div>
 </div>
 
-<!-- ✅ Success Modal -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content text-center p-4">
@@ -134,7 +128,6 @@
     </div>
 </div>
 
-<!-- ✅ Scripts -->
 <script>
     let courseIdToRegister = null;
 
@@ -161,11 +154,8 @@
                     btn.textContent = "Registered";
                     btn.disabled = true;
 
-                    // Show success modal
                     const successModal = new bootstrap.Modal(document.getElementById('successModal'));
                     successModal.show();
-
-                    // Auto close after 2.5s
                     setTimeout(() => successModal.hide(), 2500);
                 } else if (result === "unauthenticated") {
                     alert("Vui lòng đăng nhập để đăng ký khóa học.");

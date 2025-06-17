@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>History Enrollment</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 30px 0;
+            color: #f0ad4e;
+        }
+
+        .table img {
+            width: 50px;
+            height: auto;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .status.CONFIRM {
+            color: green;
+        }
+
+        .status.WAITING {
+            color: orange;
+        }
+
+        .status.CANCEL, .status.DENIED {
+            color: red;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: end;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>History Enrollment</h2>
+
+    <form class="search-bar" method="get" th:action="@{/historyEnrollment}">
+        <select name="sortStatus" class="form-select w-auto" onchange="this.form.submit()">
+            <option value="">Sort By Status</option>
+            <option value="CONFIRM" th:selected="${sortStatus == 'CONFIRM'}">CONFIRM</option>
+            <option value="WAITING" th:selected="${sortStatus == 'WAITING'}">WAITING</option>
+            <option value="CANCEL" th:selected="${sortStatus == 'CANCEL'}">CANCEL</option>
+            <option value="DENIED" th:selected="${sortStatus == 'DENIED'}">DENIED</option>
+        </select>
+        <input type="text" name="search" class="form-control w-auto" placeholder="search by course name" th:value="${search}">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <table class="table table-bordered table-hover text-center">
+        <thead class="table-light">
+        <tr>
+            <th>Course ID</th>
+            <th>Course Name</th>
+            <th>Duration (Hour)</th>
+            <th>Instructor</th>
+            <th>Image</th>
+            <th>Created Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="enroll : ${enrollments}">
+            <td th:text="${enroll.course.id}"></td>
+            <td th:text="${enroll.course.name}"></td>
+            <td th:text="${enroll.course.duration}"></td>
+            <td th:text="${enroll.course.instructor}"></td>
+            <td><img th:src="${enroll.course.image}" alt="Course Image"/></td>
+            <td th:text="${enroll.course.create_at}"></td>
+            <td th:text="${enroll.status}" th:class="'status ' + ${enroll.status}"></td>
+            <td>
+                <button type="button" class="btn btn-danger"
+                        th:if="${enroll.status.name() == 'WAITING'}"
+                        th:attr="data-enrollment-id=${enroll.id}"
+                        onclick="openConfirmModal(this)">
+                    Hủy đăng ký
+                </button>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(enrollments)}">
+            <td colspan="8">No data available</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/historyEnrollment(page=${currentPage - 1}, size=${size}, sortStatus=${sortStatus}, search=${search})}">&laquo;</a>
+            </li>
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/historyEnrollment(page=${pageNum}, size=${size}, sortStatus=${sortStatus}, search=${search})}"
+                   th:text="${pageNum}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/historyEnrollment(page=${currentPage + 1}, size=${size}, sortStatus=${sortStatus}, search=${search})}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Modal xác nhận -->
+<div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="cancelForm" th:action="@{/enrollment/cancel}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận hủy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn hủy đăng ký khóa học này không?
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="enrollmentId" id="enrollmentIdInput">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Không</button>
+                    <button type="submit" class="btn btn-danger">Có, hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.bundle.min.js}"></script>
+<script>
+    function openConfirmModal(button) {
+        const enrollmentId = button.getAttribute('data-enrollment-id');
+        document.getElementById("enrollmentIdInput").value = enrollmentId;
+        const modal = new bootstrap.Modal(document.getElementById('confirmCancelModal'));
+        modal.show();
+    }
+</script>
+</body>
+</html>
