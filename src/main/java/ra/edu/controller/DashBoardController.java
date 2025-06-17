@@ -5,7 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ra.edu.service.DashboardService;
+
+import javax.servlet.http.HttpSession;
 
 import static java.lang.System.out;
 
@@ -17,7 +20,11 @@ public class DashBoardController {
     public DashboardService dashboardService;
 
     @GetMapping
-    public String dashboard(Model model) {
+    public String dashboard(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("user") == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng đăng nhập");
+            return "redirect:/auth/login";
+        }
         model.addAttribute("totalCourses", dashboardService.countTotalCourses());
         model.addAttribute("totalStudents", dashboardService.countTotalStudents());
         model.addAttribute("totalEnrollments", dashboardService.countTotalEnrollments());

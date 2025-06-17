@@ -11,6 +11,8 @@ import ra.edu.entity.User;
 import ra.edu.enumData.Role;
 import ra.edu.enumData.StatusAccount;
 import ra.edu.service.StudentServiceImp;
+
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,7 +32,11 @@ public class StudentController {
                                       @RequestParam(defaultValue = "asc") String sortDirection,
                                       @RequestParam(defaultValue = "1") int page,
                                       @RequestParam(defaultValue = "5") int size,
-                                      Model model) {
+                                      Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("user") == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng đăng nhập");
+            return "redirect:/auth/login";
+        }
         loadStudentListForPage(model, name, sortDirection, page, size);
         return "admin";
     }

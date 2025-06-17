@@ -1,0 +1,103 @@
+<!-- enrollmentAdminPage.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Enrollment Manager</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <style>
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        table thead th {
+            background-color: #f0f0f0;
+            font-weight: 600;
+        }
+        .status-waiting { color: #ffc107; font-weight: bold; }
+        .status-confirm { color: #28a745; font-weight: bold; }
+        .status-denied { color: #dc3545; font-weight: bold; }
+        .status-cancel { color: #ff0000; font-weight: bold; }
+        .btn-confirm { background-color: #28a745; color: white; }
+        .btn-deny { background-color: #ffc107; color: black; }
+        .btn-confirm:hover, .btn-deny:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+<div class="container mt-5" th:fragment="enrollmentAdminPage">
+    <h3 class="mb-4 fw-bold">Enrollment Manager</h3>
+
+    <form th:action="@{/admin/enrollments}" method="get" class="d-flex gap-2 mb-3">
+        <label>
+            <select class="form-select" style="width: 200px;" name="statusFilter" onchange="this.form.submit()">
+                <option value="">Select By Status</option>
+                <option value="WAITING" th:selected="${statusFilter == 'WAITING'}">WAITING</option>
+                <option value="CONFIRM" th:selected="${statusFilter == 'CONFIRM'}">CONFIRM</option>
+                <option value="CANCEL" th:selected="${statusFilter == 'CANCEL'}">CANCEL</option>
+                <option value="DENIED" th:selected="${statusFilter == 'DENIED'}">DENIED</option>
+            </select>
+        </label>
+        <label>
+            <input type="text" class="form-control" name="keyword" placeholder="search by course name"
+                   th:value="${keyword}"/>
+        </label>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <table class="table table-bordered table-hover text-center align-middle">
+        <thead>
+        <tr>
+            <th>Enrollment ID</th>
+            <th>Student Name</th>
+            <th>Course Name</th>
+            <th>Registered Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="enroll : ${enrollments}">
+            <td th:text="${enroll.id}">E0001</td>
+            <td th:text="${enroll.user.name}">Alice Johnson</td>
+            <td th:text="${enroll.course.name}">Basic Web Programming</td>
+            <td th:text="${enroll.registered_at != null ? T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy').format(enroll.registered_at) : ''}">05/06/2025</td>
+            <td>
+                <span th:classappend="'status-' + ${enroll.status}"
+                      th:text="${enroll.status}"></span>
+            </td>
+            <td>
+                <div th:if="${enroll.status.toString() == 'WAITING'}" class="d-flex justify-content-center gap-2">
+                    <form th:action="@{/admin/enrollments/confirm}" method="post">
+                        <input type="hidden" name="id" th:value="${enroll.id}" />
+                        <button type="submit" class="btn btn-sm btn-confirm">CONFIRM</button>
+                    </form>
+                    <form th:action="@{/admin/enrollments/deny}" method="post">
+                        <input type="hidden" name="id" th:value="${enroll.id}" />
+                        <button type="submit" class="btn btn-sm btn-deny">DENIED</button>
+                    </form>
+                </div>
+                <span th:if="${enroll.status.toString() != 'WAITING'}">-</span>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/enrollments(page=${currentPage - 1}, keyword=${keyword}, statusFilter=${statusFilter})}">←</a>
+            </li>
+            <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${page == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/admin/enrollments(page=${page}, keyword=${keyword}, statusFilter=${statusFilter})}" th:text="${page}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/enrollments(page=${currentPage + 1}, keyword=${keyword}, statusFilter=${statusFilter})}">→</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

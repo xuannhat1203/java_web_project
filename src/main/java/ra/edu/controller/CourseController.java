@@ -8,11 +8,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ra.edu.dto.CourseConvertDTO;
 import ra.edu.dto.CourseDTO;
 import ra.edu.entity.Course;
 import ra.edu.service.CourseService;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -35,8 +37,11 @@ public class CourseController {
             @RequestParam(defaultValue = "asc") String sortDirection,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size,
-            Model model) {
-
+            Model model, HttpSession session,RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("user") == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Bạn chưa đăng nhập.");
+            return "redirect:/auth/login";
+        }
         loadCourseListForPage(model, name, sortDirection, page, size);
         model.addAttribute("courseDTO", new CourseDTO());
         return "admin";

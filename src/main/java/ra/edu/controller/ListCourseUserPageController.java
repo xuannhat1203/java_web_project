@@ -1,5 +1,6 @@
 package ra.edu.controller;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ra.edu.entity.Course;
 import ra.edu.entity.Enrollment;
 import ra.edu.entity.User;
@@ -38,10 +39,11 @@ public class ListCourseUserPageController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String search,
-            Model model,HttpSession session) {
+            Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/login";
+            redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng đăng nhập");
+            return "redirect:/auth/login";
         }
         List<Course> allCourses;
         if (search != null && !search.isEmpty()) {
