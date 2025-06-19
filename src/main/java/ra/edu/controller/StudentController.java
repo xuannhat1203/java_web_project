@@ -63,41 +63,4 @@ public class StudentController {
         }
         return "redirect:/admin/users";
     }
-
-    private User convertToUser(UserDTO dto, User existingUser) {
-        User user = new User();
-        if (existingUser != null) {
-            user.setId(existingUser.getId());
-            user.setCreate_at(existingUser.getCreate_at());
-            user.setRole(existingUser.getRole());
-            user.setStatus(existingUser.getStatus());
-            user.setEnrollments(existingUser.getEnrollments());
-        } else {
-            user.setCreate_at(LocalDate.now());
-            user.setRole(Role.STUDENT);
-            user.setStatus(StatusAccount.ACTIVE);
-        }
-        user.setUsername(dto.getUsername());
-        user.setName(dto.getName());
-        user.setDob(dto.getDob());
-        user.setSex(dto.getSex());
-        user.setPhone(dto.getPhone());
-        user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
-
-        return user;
-    }
-    private UserDTO convertToUserDTO(User user) {
-        UserDTO dto = new UserDTO();
-        dto.setUsername(user.getUsername());
-        dto.setName(user.getName());
-        dto.setDob(user.getDob());
-        dto.setSex(user.isSex());
-        dto.setPhone(user.getPhone());
-        dto.setEmail(user.getEmail());
-        dto.setPassword(user.getPassword());
-        return dto;
-    }
-
-
 }

@@ -13,15 +13,14 @@
     <div class="mb-4 d-flex justify-content-between">
         <h2>Danh sách sinh viên</h2>
     </div>
-
     <form id="searchForm" class="d-flex mb-4" th:action="@{/admin/users}" method="get">
         <input class="form-control me-2" type="search" name="name" placeholder="Tìm sinh viên"
                th:value="${name}" />
 
         <label>
             <select class="form-select me-2" name="sortDirection" style="width: 150px;">
-                <option th:value="asc" th:selected="${sortDirection == 'asc'}">ID tăng dần</option>
-                <option th:value="desc" th:selected="${sortDirection == 'desc'}">ID giảm dần</option>
+                <option th:value="asc" th:selected="${sortDirection == 'asc'}">Tên tăng dần</option>
+                <option th:value="desc" th:selected="${sortDirection == 'desc'}">Tên giảm dần</option>
             </select>
         </label>
 
@@ -41,7 +40,7 @@
         </thead>
         <tbody>
         <tr th:each="student, iterStat : ${users}">
-            <td th:text="${iterStat.count}">1</td>
+            <td th:text="${iterStat.count}"></td>
             <td th:text="${student.name}"></td>
             <td th:text="${student.email}"></td>
             <td th:text="${student.dob}"></td>

@@ -58,9 +58,12 @@ public class CourseController {
 
         boolean isCheck = courseDTO.getId() != null;
 
-        if (!isCheck && courseService.existsByName(courseDTO.getName())) {
+        String normalizedName = courseDTO.getName().trim().replaceAll("\\s+", " ");
+        courseDTO.setName(normalizedName);
+        if (!isCheck && courseService.existsByName(normalizedName)) {
             bindingResult.rejectValue("name", "error.courseDTO", "Tên khóa học đã tồn tại");
         }
+
         if (!isCheck && (courseDTO.getImageFile() == null || courseDTO.getImageFile().isEmpty())) {
             bindingResult.rejectValue("imageFile", "error.courseDTO", "Ảnh không được để trống");
         }

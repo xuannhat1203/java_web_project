@@ -18,7 +18,7 @@ public class StudentRepositoryImp implements StudentRepository {
     public List<User> listStudentPagination(String search, String sort, int page, int size) {
         Session session = sessionFactory.openSession();
         try {
-            StringBuilder hql = new StringBuilder("FROM User c WHERE 1=1");
+            StringBuilder hql = new StringBuilder("FROM User c WHERE 1=1 and c.role = 'STUDENT'");
 
             if (search != null && !search.trim().isEmpty()) {
                 hql.append(" AND LOWER(c.name) LIKE :keyword");

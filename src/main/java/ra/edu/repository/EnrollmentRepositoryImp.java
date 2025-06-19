@@ -24,7 +24,7 @@ public class EnrollmentRepositoryImp implements EnrollmentRepository {
         try {
             transaction = session.beginTransaction();
 
-            StringBuilder hql = new StringBuilder("FROM Enrollment e WHERE e.user.id = :userId");
+            StringBuilder hql = new StringBuilder("FROM Enrollment e WHERE e.user.id = :userId ");
 
             if (search != null && !search.trim().isEmpty()) {
                 hql.append(" AND LOWER(e.course.name) LIKE :search");

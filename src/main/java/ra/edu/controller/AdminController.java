@@ -25,4 +25,9 @@ public class AdminController {
         List<Course> courses = courseService.findAll("","asc", 1,5);
         return "admin";
     }
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/auth/login";
+    }
 }

@@ -6,6 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ra.edu.dto.LoginDto;
+import ra.edu.entity.Login;
 import ra.edu.enumData.Role;
 import ra.edu.enumData.StatusAccount;
 import ra.edu.dto.UserDTO;
@@ -64,27 +66,48 @@ public class LoginAndRegister {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String loginForm(Model model) {
+        if (!model.containsAttribute("userLogin")) {
+            model.addAttribute("userLogin", new LoginDto());
+        }
         return "login";
     }
 
+
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
-        User user = personService.login(username, password);
-        if (user == null) {
-            model.addAttribute("error", "Tài khoản mật khẩu không chính xác!");
+    public String login(@Valid @ModelAttribute("userLogin") LoginDto userLogin,
+                        BindingResult bindingResult,
+                        RedirectAttributes redirectAttributes,
+                        Model model,
+                        HttpSession session) {
+
+        // Trả lại form nếu có lỗi validate
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("userLogin", userLogin);
             return "login";
         }
 
-        if (user.getStatus() == StatusAccount.ACTIVE) {
-            session.setAttribute("user", user);
-            redirectAttributes.addFlashAttribute("message", "Đăng nhập thành công!");
-            if (user.getRole() == Role.ADMIN) {
-                return "redirect:/admin/dashboard";
+        User user = personService.login(userLogin.getUsername(), userLogin.getPassword());
+
+        if (user != null) {
+            if (user.getStatus().equals(StatusAccount.ACTIVE)) {
+                session.setAttribute("user", user);
+
+                if (user.getRole().equals(Role.ADMIN)) {
+                    return "redirect:/admin/dashboard";
+                } else {
+                    return "redirect:/courses";
+                }
+
             } else {
-                return "redirect:/courses";
+                redirectAttributes.addFlashAttribute("errorMessage", "Tài khoản đang bị khóa");
+                return "redirect:/auth/login";
             }
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Tài khoản không tìm thấy");
+            return "redirect:/auth/login";
         }
-        return "login";
     }
+
+
 }

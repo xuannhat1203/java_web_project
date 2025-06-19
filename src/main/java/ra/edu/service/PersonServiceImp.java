@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ra.edu.entity.User;
 import ra.edu.repository.PersonRepository;
 
+import java.util.List;
+
 @Service
 public class PersonServiceImp implements PersonService {
     @Autowired
@@ -34,5 +36,16 @@ public class PersonServiceImp implements PersonService {
     public User login(String username, String password) {
         return authRepository.login(username, password);
     }
-
+    @Override
+    public boolean updatePassword(int id, String newPassword){
+        return authRepository.updatePassword(id, newPassword);
+    }
+    @Override
+    public boolean updateProfile(User user){
+        return authRepository.updateProfile(user);
+    }
+    @Override
+    public List<User> getAllUsers() {
+        return authRepository.getAllUsers();
+    }
 }

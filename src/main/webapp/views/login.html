@@ -62,31 +62,36 @@
 <body>
 <div class="container-fluid login-container">
     <div class="left-image">
-        <img src="http://res.cloudinary.com/dlnpapflp/image/upload/v1750142422/kuuidwcharrfoebtpiiq.png" alt="Ảnh đăng nhập">
+        <img src="http://res.cloudinary.com/dlnpapflp/image/upload/v1750142422/kuuidwcharrfoebtpiiq.png"
+             alt="Ảnh đăng nhập">
     </div>
 
     <div class="right-section">
         <h2 class="mb-3 fw-bold">Join us today 👋</h2>
-        <p style="color: #aeb1c6;">Clarity gives you the blocks and components you need to create a truly professional website.</p>
+        <p style="color: #aeb1c6;">Clarity gives you the blocks and components you need to create a truly professional
+            website.</p>
 
-        <div th:if="${errorMessage}" class="alert alert-danger text-center fw-bold mb-3" style="max-width: 400px; margin: 0 auto;">
+        <div th:if="${errorMessage}" class="alert alert-danger text-center fw-bold mb-3"
+             style="max-width: 400px; margin: 0 auto;">
             <span th:text="${errorMessage}"></span>
         </div>
 
         <div class="card-custom mt-4">
             <h3 class="text-center mb-4 fw-bold">Sign in</h3>
-            <form th:action="@{/auth/login}" method="post">
+            <form th:action="@{/auth/login}" method="post" th:object="${userLogin}">
                 <div class="mb-3">
-                    <input type="text" class="form-control" name="username" placeholder="Email" />
+                    <input type="text" class="form-control" th:field="*{username}" placeholder="Username"/>
+                    <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                 </div>
                 <div class="mb-3">
-                    <input type="password" class="form-control" name="password" placeholder="Password" />
+                    <input type="password" class="form-control" th:field="*{password}" placeholder="Password"/>
+                    <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                 </div>
-                <div class="text-danger mb-3" th:if="${error != null}" th:text="${error}"></div>
                 <div class="d-grid">
                     <button type="submit" class="btn btn-login btn-lg">Login</button>
                 </div>
             </form>
+
             <div class="mt-3 text-center">
                 <span>Don’t have an account , </span>
                 <a th:href="@{/auth/register}" class="register-link">register</a>

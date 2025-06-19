@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ra.edu.entity.User;
 
+import java.util.List;
+
 @Repository
 public class PersonRepositoryImp implements PersonRepository {
     @Autowired
@@ -55,4 +57,64 @@ public class PersonRepositoryImp implements PersonRepository {
         query.setParameter("password", password);
         return query.uniqueResult();
     }
+    @Override
+    public boolean updatePassword(int id, String newPassword){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        User user = session.get(User.class, id);
+        if(user == null){
+            session.getTransaction().commit();
+            return false;
+        }
+        user.setPassword(newPassword);
+        session.update(user);
+        session.getTransaction().commit();
+        return true;
+    }
+    @Override
+    public boolean updateProfile(User user) {
+        Session session = sessionFactory.openSession();
+        User user1 = session.get(User.class, user.getId());
+        if (user1 == null) {
+            return false;
+        }
+        String hql = "FROM User u WHERE u.id != :id AND u.name = :name AND u.phone = :phone";
+        List<User> duplicates = session.createQuery(hql, User.class)
+                .setParameter("id", user.getId())
+                .setParameter("name", user.getName())
+                .setParameter("phone", user.getPhone())
+                .getResultList();
+
+        if (!duplicates.isEmpty()) {
+            return false;
+        }
+        user1.setName(user.getName());
+        user1.setPhone(user.getPhone());
+        session.beginTransaction();
+        session.update(user1);
+        session.getTransaction().commit();
+        session.close();
+        return true;
+    }
+    @Override
+    public List<User> getAllUsers() {
+        Session session = sessionFactory.openSession();
+        List<User> users = null;
+        try {
+            session.beginTransaction();
+            Query<User> query = session.createQuery("FROM User", User.class);
+            users = query.getResultList();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            if (session.getTransaction() != null) {
+                session.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return users;
+    }
+
+
 }

@@ -47,9 +47,34 @@
             gap: 10px;
             margin-bottom: 15px;
         }
+
+        .navbar-brand img {
+            max-height: 40px;
+        }
     </style>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 py-2 sticky-top">
+    <a class="navbar-brand d-flex align-items-center" href="/">
+        <img src="https://jbagy.me/wp-content/uploads/2025/03/Hinh-anh-avatar-nam-cute-2.jpg" alt="Logo"
+             onerror="this.src='https://via.placeholder.com/120x40'">
+    </a>
+    <div class="collapse navbar-collapse justify-content-between">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link fw-semibold" th:href="@{/courses}">List Course</a></li>
+            <li class="nav-item"><a class="nav-link fw-semibold" th:href="@{/historyEnrollment}">History Enrollment</a></li>
+            <li class="nav-item"><a class="nav-link fw-semibold" th:href="@{/profile}">Profile</a></li>
+        </ul>
+        <div class="d-flex gap-3 align-items-center">
+            <a href="#" class="text-dark"><i class="bi bi-bell fs-5"></i></a>
+            <img src="https://jbagy.me/wp-content/uploads/2025/03/Hinh-anh-avatar-nam-cute-2.jpg" alt="User" width="32" height="32" class="rounded-circle"
+                 onerror="this.src='https://via.placeholder.com/32'">
+            <form th:action="@{/courses/logout}" method="post">
+                <button class="btn btn-outline-secondary btn-sm">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
 <div class="container mt-5">
     <h2>History Enrollment</h2>
 

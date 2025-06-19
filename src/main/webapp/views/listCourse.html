@@ -109,8 +109,8 @@
             <input class="form-control me-2" type="search" placeholder="Tìm khóa học" aria-label="Search" name="name"
                    th:value="${name}" id="searchInput">
             <select class="form-select me-2" name="sortDirection" style="width: 150px;" id="sortSelect">
-                <option th:value="asc" th:selected="${sortDirection == 'asc'}">Tăng dần</option>
-                <option th:value="desc" th:selected="${sortDirection == 'desc'}">Giảm dần</option>
+                <option th:value="asc" th:selected="${sortDirection == 'asc'}">Tên Tăng dần</option>
+                <option th:value="desc" th:selected="${sortDirection == 'desc'}">Tên Giảm dần</option>
             </select>
             <input type="hidden" name="page" th:value="${currentPage}"/>
             <input type="hidden" name="size" th:value="${size}"/>
@@ -188,7 +188,7 @@
 </div>
 
 <div th:replace="formCourse :: formCourseModal"></div>
-<!-- Modal Xác nhận Xóa -->
+
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -257,15 +257,14 @@
             new bootstrap.Modal(document.getElementById('formCourseModal')).show();
         });
     });
-    // Xử lý nút Xóa bằng Bootstrap Modal
     const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 
     document.querySelectorAll('.btn-delete-course').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            e.preventDefault(); // chặn href mặc định
+            e.preventDefault();
             const url = btn.getAttribute('data-url');
-            confirmDeleteBtn.setAttribute('href', url); // gán link xóa vào nút xác nhận
+            confirmDeleteBtn.setAttribute('href', url);
             confirmDeleteModal.show();
         });
     });

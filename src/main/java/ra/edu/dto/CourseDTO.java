@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
@@ -20,8 +21,7 @@ public class CourseDTO {
 
     @NotBlank(message = "Giảng viên không được để trống")
     private String instructor;
-
+    @NotNull(message = "Ảnh không được để trống")
     private MultipartFile imageFile;
-
     private String image;
 }

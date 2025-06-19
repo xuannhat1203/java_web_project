@@ -115,4 +115,9 @@ public class ListCourseUserPageController {
         User user = (User) session.getAttribute("user");
         return enrollmentUserRegisterService.checkEnrollment(user.getId(), id);
     }
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/auth/login";
+    }
 }
