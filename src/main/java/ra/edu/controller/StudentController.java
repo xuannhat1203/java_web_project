@@ -37,6 +37,12 @@ public class StudentController {
             redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng đăng nhập");
             return "redirect:/auth/login";
         }
+        User user = (User) session.getAttribute("user");
+        if (user.getRole() != Role.ADMIN) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền truy cập vào trang quản lý");
+            session.removeAttribute("user");
+            return "redirect:/auth/login";
+        }
         loadStudentListForPage(model, name, sortDirection, page, size);
         return "admin";
     }

@@ -81,7 +81,6 @@ public class LoginAndRegister {
                         Model model,
                         HttpSession session) {
 
-        // Trả lại form nếu có lỗi validate
         if (bindingResult.hasErrors()) {
             model.addAttribute("userLogin", userLogin);
             return "login";

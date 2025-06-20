@@ -12,6 +12,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ra.edu.dto.CourseConvertDTO;
 import ra.edu.dto.CourseDTO;
 import ra.edu.entity.Course;
+import ra.edu.entity.User;
+import ra.edu.enumData.Role;
+import ra.edu.enumData.StatusAccount;
 import ra.edu.service.CourseService;
 
 import javax.servlet.http.HttpSession;
@@ -37,15 +40,22 @@ public class CourseController {
             @RequestParam(defaultValue = "asc") String sortDirection,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size,
-            Model model, HttpSession session,RedirectAttributes redirectAttributes) {
+            Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         if (session.getAttribute("user") == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Bạn chưa đăng nhập.");
+            return "redirect:/auth/login";
+        }
+        User user = (User) session.getAttribute("user");
+        if (user.getRole() != Role.ADMIN) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền truy cập vào trang quản lý");
+            session.removeAttribute("user");
             return "redirect:/auth/login";
         }
         loadCourseListForPage(model, name, sortDirection, page, size);
         model.addAttribute("courseDTO", new CourseDTO());
         return "admin";
     }
+
 
     @PostMapping
     public String handleSaveOrUpdateCourse(@Valid @ModelAttribute("courseDTO") CourseDTO courseDTO,

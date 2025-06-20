@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ra.edu.entity.Course;
+import ra.edu.entity.User;
+import ra.edu.enumData.Role;
 import ra.edu.service.CourseService;
 
 import javax.servlet.http.HttpSession;
@@ -20,6 +22,12 @@ public class AdminController {
     public String admin(HttpSession session, RedirectAttributes redirectAttributes) {
         if (session.getAttribute("user") == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Bạn chưa đăng nhập.");
+            return "redirect:/auth/login";
+        }
+        User user = (User) session.getAttribute("user");
+        if (user.getRole() != Role.ADMIN) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền truy cập vào trang quản lý");
+            session.removeAttribute("user");
             return "redirect:/auth/login";
         }
         List<Course> courses = courseService.findAll("","asc", 1,5);

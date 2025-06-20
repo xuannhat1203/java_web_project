@@ -122,7 +122,21 @@ public class EnrollmentAdminRepositoryImp implements EnrollmentAdminRepository {
             session.close();
         }
     }
-
+    @Override
+    public Enrollment findById(int id) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            Enrollment enrollment = session.get(Enrollment.class, id);
+            session.getTransaction().commit();
+            return enrollment;
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
     private boolean isValidStatus(String status) {
         try {
             StatusEnrollment.valueOf(status);

@@ -24,4 +24,8 @@ public class EnrollmentAdminServiceImp implements EnrollmentAdminService {
     public boolean changeStatus(int idEnrollment,String status) {
         return enrollmentAdminRepository.changeStatus(idEnrollment,status);
     }
+    @Override
+    public Enrollment findById(int id){
+        return enrollmentAdminRepository.findById(id);
+    }
 }

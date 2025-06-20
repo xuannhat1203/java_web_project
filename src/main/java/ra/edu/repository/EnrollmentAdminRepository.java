@@ -6,4 +6,5 @@ public interface EnrollmentAdminRepository {
     List<Enrollment> listEnrollmentAdmin(String search,String sortStatus, int page, int size);
     boolean changeStatus(int idEnrollment,String status);
     Long countEnrollments(String search, String statusFilter);
+    Enrollment findById(int id);
 }

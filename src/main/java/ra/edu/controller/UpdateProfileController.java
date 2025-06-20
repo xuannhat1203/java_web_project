@@ -85,9 +85,9 @@ public class UpdateProfileController {
         user.setPassword(changePasswordDTO.getNewPassword());
         personService.updatePassword(user.getId(), changePasswordDTO.getNewPassword());
         session.setAttribute("user", user);
-
         redirectAttributes.addFlashAttribute("successMessage", "Đổi mật khẩu thành công");
-        return "redirect:/profile";
+        session.removeAttribute("user");
+        return "redirect:/auth/login";
     }
 
     @PostMapping("/update")

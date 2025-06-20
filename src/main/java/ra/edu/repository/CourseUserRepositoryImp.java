@@ -29,7 +29,7 @@ public class CourseUserRepositoryImp implements CourseUserRepository {
     @Override
     public List<Course> findAllCourses() {
         try (Session session = sessionFactory.openSession()) {
-            Query<Course> query = session.createQuery("FROM Course", Course.class);
+            Query<Course> query = session.createQuery("FROM Course where name NOT LIKE '%_delete'", Course.class);
             return query.getResultList();
         }
     }
