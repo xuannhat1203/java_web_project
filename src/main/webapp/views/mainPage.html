@@ -162,7 +162,6 @@
                         <p><strong>Instructor:</strong> <span th:text="${course.instructor}"></span></p>
                     </div>
 
-                    <!-- Nếu đã đăng nhập -->
                     <button class="btn btn-success mt-2 btn-register"
                             th:id="'registerBtn-' + ${course.id}"
                             th:data-id="${course.id}"
@@ -172,7 +171,6 @@
                             onclick="confirmRegister(this)">
                     </button>
 
-                    <!-- Nếu chưa đăng nhập -->
                     <button class="btn btn-secondary mt-2 btn-register"
                             th:if="${user == null}" disabled>
                         Login to Register
@@ -200,7 +198,7 @@
     </div>
 </div>
 
-<!-- Modal xác nhận đăng ký -->
+
 <div class="modal fade" id="confirmRegisterModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -217,7 +215,7 @@
     </div>
 </div>
 
-<!-- Modal đăng ký thành công -->
+
 <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content text-center p-4">
