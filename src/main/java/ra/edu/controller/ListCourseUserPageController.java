@@ -70,7 +70,7 @@
                     .map(e -> e.getCourse().getId())
                     .collect(Collectors.toList())
                     : List.of();
-            model.addAttribute("g", enrolledCourseIds);
+            model.addAttribute("enrolledCourseIds", enrolledCourseIds);
 
             return "mainPage";
         }
